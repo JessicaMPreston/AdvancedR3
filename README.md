@@ -1,10 +1,13 @@
+Jessica Preston
+Research within the field of nutrition, fertility and global health.
+
 TODO: Add more to the title of your project here
 
 # AdvancedR3:
 
 TODO: Give a brief description of what your project is about
 
-This project...
+This project is the coursework for the Advanced R3 course.
 
 # Brief description of folder and file contents
 
