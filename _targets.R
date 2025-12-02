@@ -60,7 +60,6 @@ list(
     command = readr::read_csv(file,
                               show_col_types = FALSE),
 
-
   )
 )
 
