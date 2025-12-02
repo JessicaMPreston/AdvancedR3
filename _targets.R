@@ -5,7 +5,7 @@
 
 # Load packages required to define the pipeline:
 library(targets)
-# library(tarchetypes) # Load other packages as needed.
+library(tarchetypes) # Load other packages as needed.
 
 # Set target options:
 tar_option_set(
@@ -50,30 +50,19 @@ tar_source()
 
 # Replace the target list below with your own:
 list(
-  tar_target( #step 1, tell tar that the file exist
+  tar_target( # step 1, tell tar that the file exist
     name = file,
     command = "data/lipidomics.csv",
     format = "file"
   ),
-  tar_target( #step 2: read in the pre-defined file
+  tar_target( # step 2: read in the pre-defined file
     name = lipidomics,
     command = readr::read_csv(file,
-                              show_col_types = FALSE),
-
+      show_col_types = FALSE
+    ),
+  ),
+  tar_quarto( # read in the quarto document
+    name = quarto_doc,
+    path = "docs/learning.qmd"
   )
 )
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

@@ -4,8 +4,14 @@ author: "Jessica Preston"
 format: html
 ---
 
+#Quarto document is a bit like the final product
+
 ```{r setup}
-library(tidyverse)
+library(targets)
+tar_config_set(store = here::here("_targets"))
+source(here::here("R/functions.R"))
+lipidomics <- tar_read(lipidomics)
+
 ```
 
 ## This is poorly formatted list
@@ -62,3 +68,4 @@ sub~script~
 ## Testing for git
 
 Making changes to test the function of git. Blah blah blah
+
