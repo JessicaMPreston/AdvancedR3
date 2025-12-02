@@ -4,10 +4,14 @@ author: "Jessica Preston"
 format: html
 ---
 
-
 ```{r setup}
 library(tidyverse)
 ```
+
+## This is poorly formatted list
+
+-   definitely should have an empty space above this list.
+-   This isn't a list, why not?
 
 ## About me
 
@@ -16,16 +20,10 @@ library(tidyverse)
 -   Center for translational medical parasitology
 -   Department of Immunology & Microbiology – University of Copenhagen
 
-My *research interests* include **nutrition**, **fertility**, and **metabolic diseases**.
+My *research interests* include **nutrition**, **fertility**, and
+**metabolic diseases**.
 
-___
-
-## Simple code
-
-
-```{r}
-3 * 3
-```
+------------------------------------------------------------------------
 
 # Header Options
 
@@ -43,13 +41,13 @@ Paragraph.
 
 # List options
 
-- item 1
-- item 2
-- item 3
+-   item 1
+-   item 2
+-   item 3
 
-1. item 1
-2. item 2
-3. item 3
+1.  item 1
+2.  item 2
+3.  item 3
 
 # Text formatting options
 
@@ -63,10 +61,4 @@ sub~script~
 
 ## Testing for git
 
-Making changes to test the function of git.
-Blah blah blah 
-
-
-
-
-
+Making changes to test the function of git. Blah blah blah
