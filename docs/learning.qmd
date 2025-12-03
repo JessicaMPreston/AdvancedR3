@@ -99,3 +99,31 @@ glm( # write model for cholesterol vs. condition(class)
     .before = everything()
   )
 ```
+
+##Creat a function to fit the model function for selecting data and
+model
+
+```{r}
+#' Fitting a model function
+#'
+#' @param data, df (lipidomics)
+#' @param model, pre-defined model (x ~  y)
+#'
+#' @returns table of model results
+
+fit_model <- function(data, model) {
+  stats::glm(
+    formula = model,
+    data = data,
+    family = binomial()
+  ) |>
+    broom::tidy(exponentiate = TRUE) |> # model results into a more readable format using the broom::tidy function
+    dplyr::mutate(
+      metabolite = unique(data$metabolite),
+      model = format(model),
+      .before = dplyr::everything()
+    )
+}
+
+fit_model(just_cholesterol, class ~ value)
+```

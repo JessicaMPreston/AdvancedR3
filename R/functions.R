@@ -42,15 +42,36 @@ clean <- function(data) {
 }
 
 #' Preprocessing of the data
-#'changes metabolites to a class variable and scaling the metabolite groups
+#' changes metabolites to a class variable and scaling the metabolite groups
 #' @param data, lipidomics df
 #'
 #' @returns cleaned df (lipidomics)
 
-preprocess <- function(data){
+preprocess <- function(data) {
   data |>
     dplyr::mutate(
       class = as.factor(class),
-      value = scale(value) #so that it scales cholesterol to be compared to future metabolites
+      value = scale(value) # so that it scales cholesterol to be compared to future metabolites
+    )
+}
+
+#' Fitting a model function
+#'
+#' @param data, df (lipidomics)
+#' @param model, pre-defined model (x ~  y)
+#'
+#' @returns table of model results
+
+fit_model <- function(data, model) {
+  stats::glm(
+    formula = model,
+    data = data,
+    family = binomial()
+  ) |>
+    broom::tidy(exponentiate = TRUE) |> # model results into a more readable format using the broom::tidy function
+    dplyr::mutate(
+      metabolite = unique(data$metabolite),
+      model = format(model),
+      .before = dplyr::everything()
     )
 }
