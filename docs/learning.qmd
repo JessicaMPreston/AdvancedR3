@@ -14,13 +14,23 @@ source(here::here("R/functions.R"))
 lipidomics <- tar_read(lipidomics)
 ```
 
-## Makgina a table
+## Making a table
 
 ```{r}
-lipidomics |>
-  group_by(metabolite) |>
-  summarize(across(value, list(mean = mean, sd = sd))) |>
-  mutate(across(where(is.numeric), \(x) round(x, digits = 1))) |>
-  mutate(MeanSD = glue::glue("{value_mean} ({value_sd})")) |>
-  select(Metabolite = metabolite, "Mean SD" = MeanSD)
+tar_read(table_descriptive_stats) |>
+  knitr::kable(
+    caption = "The mean and SD of metabolites in the lipidomics dataset"
+  )
+```
+
+## Plot of distributions
+
+```{r}
+ggplot(
+  lipidomics,
+  aes(x = value)
+) +
+  geom_histogram() +
+  facet_wrap(vars(metabolite), scales = "free") +
+  theme_minimal()
 ```
