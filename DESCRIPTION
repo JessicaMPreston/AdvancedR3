@@ -8,6 +8,7 @@ BugReports: https://github.com/JessicaMPreston/AdvancedR3/issues
 Imports: 
     dplyr,
     fs,
+    glue,
     here,
     quarto,
     readr,
@@ -21,3 +22,5 @@ Suggests:
     gitcreds,
     styler,
     usethis
+Depends: 
+    tidyverse

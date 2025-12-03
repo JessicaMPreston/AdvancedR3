@@ -8,64 +8,19 @@ format: html
 
 ```{r setup}
 library(targets)
+library(tidyverse)
 tar_config_set(store = here::here("_targets"))
 source(here::here("R/functions.R"))
 lipidomics <- tar_read(lipidomics)
-
 ```
 
-## This is poorly formatted list
+## Makgina a table
 
--   definitely should have an empty space above this list.
--   This isn't a list, why not?
-
-## About me
-
--   Jessica M Preston
--   Postdoctoral researcher
--   Center for translational medical parasitology
--   Department of Immunology & Microbiology – University of Copenhagen
-
-My *research interests* include **nutrition**, **fertility**, and
-**metabolic diseases**.
-
-------------------------------------------------------------------------
-
-# Header Options
-
-# Header 1
-
-Paragraph.
-
-## Header 2
-
-Paragraph.
-
-### Header 3
-
-Paragraph.
-
-# List options
-
--   item 1
--   item 2
--   item 3
-
-1.  item 1
-2.  item 2
-3.  item 3
-
-# Text formatting options
-
-**bold**
-
-*italics*
-
-super^script^
-
-sub~script~
-
-## Testing for git
-
-Making changes to test the function of git. Blah blah blah
-
+```{r}
+lipidomics |>
+  group_by(metabolite) |>
+  summarize(across(value, list(mean = mean, sd = sd))) |>
+  mutate(across(where(is.numeric), \(x) round(x, digits = 1))) |>
+  mutate(MeanSD = glue::glue("{value_mean} ({value_sd})")) |>
+  select(Metabolite = metabolite, "Mean SD" = MeanSD)
+```
