@@ -75,3 +75,17 @@ fit_model <- function(data, model) {
       .before = dplyr::everything()
     )
 }
+
+
+#' Generating model results
+#'
+#' @param data df, lipidomics
+#'
+#' @returns model results, a tibble
+
+create_model_results <- function(data) {
+  data |>
+    dplyr::filter(metabolite == "Cholesterol") |>
+    preprocess() |> # calling our previous function
+    fit_model(class ~ value) # calling our previous function
+}
