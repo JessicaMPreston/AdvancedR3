@@ -34,3 +34,20 @@ ggplot(
   facet_wrap(vars(metabolite), scales = "free") +
   theme_minimal()
 ```
+
+```{r}
+#' Making distibution plots for dataset
+#'
+#' @param df, lipidomics
+#'
+#' @returns histogram plot objects
+
+create_plot_distributions <- function(data) {
+  data |>
+    ggplot2::ggplot(ggplot2::aes(x = value)) +
+    ggplot2::geom_histogram() +
+    ggplot2::facet_wrap(vars(metabolite), scales = "free") +
+    ggplot2::theme_minimal()
+}
+create_plot_distributions(lipidomics)
+```
