@@ -24,3 +24,17 @@ lipidomics |>
   mutate(MeanSD = glue::glue("{value_mean} ({value_sd})")) |>
   select(Metabolite = metabolite, "Mean SD" = MeanSD)
 ```
+
+```{r}
+create_table_descriptive_stats <- function(data) {
+  data |>
+    group_by(metabolite) |>
+    summarize(across(value, list(mean = mean, sd = sd))) |>
+    mutate(across(where(is.numeric), \(x) round(x, digits = 1))) |>
+    mutate(MeanSD = glue::glue("{value_mean} ({value_sd})")) |>
+    select(Metabolite = metabolite, "Mean SD" = MeanSD)
+}
+
+# Use it like this, which should give the same output as before.
+create_table_descriptive_stats(lipidomics)
+```
