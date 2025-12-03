@@ -27,7 +27,8 @@ create_plot_distributions <- function(data) {
     ggplot2::theme_minimal()
 }
 
-#' Clean data to sumarize repeat values
+#' Clean data to summarize repeat values
+#' Keep the mean value for duplicate values when all other characteristics match
 #'
 #' @param data , lipidomics df
 #'
@@ -38,4 +39,18 @@ clean <- function(data) {
     dplyr::group_by(dplyr::pick(-value)) |>
     dplyr::summarise(value = mean(value), .groups = "keep") |>
     dplyr::ungroup()
+}
+
+#' Preprocessing of the data
+#'changes metabolites to a class variable and scaling the metabolite groups
+#' @param data, lipidomics df
+#'
+#' @returns cleaned df (lipidomics)
+
+preprocess <- function(data){
+  data |>
+    dplyr::mutate(
+      class = as.factor(class),
+      value = scale(value) #so that it scales cholesterol to be compared to future metabolites
+    )
 }

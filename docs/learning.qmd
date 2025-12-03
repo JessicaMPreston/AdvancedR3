@@ -38,16 +38,7 @@ lipidomics |>
 ```
 
 Keep the mean value for duplicate values when all other characteristics
-match
-
-```{r}
-lipidomics |>
-  group_by(pick(-value)) |>
-  summarise(value = mean(value), .groups = "keep") |>
-  ungroup()
-```
-
-Writing a function to clean it
+match. Writing a function to clean it.
 
 ```{r}
 #' Clean data to sumarize repeat values
@@ -66,3 +57,45 @@ clean <- function(data) {
 clean(lipidomics)
 ```
 
+## Pre-processing data for fitting into a model
+
+```{r}
+#' Preprocessing of the data
+#' changes metabolites to a class variable and scaling the metabolite groups
+#' @param data, lipidomics df
+#'
+#' @returns cleaned df (lipidomics)
+
+preprocess <- function(data) {
+  data |>
+    dplyr::mutate(
+      class = as.factor(class),
+      value = scale(value) # so that it scales cholesterol to be compared to future metabolites
+    )
+}
+
+preprocess(lipidomics)
+```
+
+## Try to make data set only for cholesterol
+
+also run the model on only cholesterol
+
+```{r}
+just_cholesterol <- lipidomics |>
+  filter(metabolite == "Cholesterol") |>
+  preprocess()
+
+glm( # write model for cholesterol vs. condition(class)
+  formula = class ~ value,
+  data = just_cholesterol,
+  family = binomial()
+) |>
+  broom::tidy(exponentiate = TRUE) |> # model results into a more readable format using the broom::tidy function
+  mutate(
+    metabolite =
+      unique(just_cholesterol$metabolite),
+    model = format(class ~ value),
+    .before = everything()
+  )
+```
