@@ -59,9 +59,8 @@ list(
     name = lipidomics,
     command = readr::read_csv(file,
       show_col_types = FALSE
-    )|>
-      clean()
-    ,
+    ) |>
+      clean(),
   ),
   tar_quarto( # read in the quarto document
     name = quarto_doc,
@@ -74,5 +73,9 @@ list(
   tar_target(
     name = plot_distributions,
     command = create_plot_distributions(lipidomics)
+  ),
+  tar_target(
+    name = model_results,
+    command = create_model_results(lipidomics)
   )
 )
