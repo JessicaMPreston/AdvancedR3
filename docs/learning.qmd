@@ -4,7 +4,7 @@ author: "Jessica Preston"
 format: html
 ---
 
-#Quarto document is a bit like the final product
+#Seting up R correctly
 
 ```{r setup}
 library(targets)
@@ -26,6 +26,43 @@ tar_read(table_descriptive_stats) |>
 ## Results:: Distribution plot
 
 ```{r}
-tar_read(plot_distributions) |>
-  print()
+tar_read(plot_distributions)
 ```
+
+## Preparing the data for a model
+
+```{r}
+lipidomics |>
+  count(code, metabolite) |>
+  filter(n > 1)
+```
+
+Keep the mean value for duplicate values when all other characteristics
+match
+
+```{r}
+lipidomics |>
+  group_by(pick(-value)) |>
+  summarise(value = mean(value), .groups = "keep") |>
+  ungroup()
+```
+
+Writing a function to clean it
+
+```{r}
+#' Clean data to sumarize repeat values
+#'
+#' @param data , lipidomics df
+#'
+#' @returns cleaned df
+
+clean <- function(data) {
+  data |>
+    dplyr::group_by(dplyr::pick(-value)) |>
+    dplyr::summarise(value = mean(value), .groups = "keep") |>
+    dplyr::ungroup()
+}
+
+clean(lipidomics)
+```
+
