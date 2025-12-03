@@ -59,7 +59,9 @@ list(
     name = lipidomics,
     command = readr::read_csv(file,
       show_col_types = FALSE
-    ),
+    )|>
+      clean()
+    ,
   ),
   tar_quarto( # read in the quarto document
     name = quarto_doc,
