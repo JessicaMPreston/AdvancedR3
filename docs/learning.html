@@ -353,8 +353,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </section>
-<section id="creating-the-model-results" class="level2">
-<h2 class="anchored" data-anchor-id="creating-the-model-results">Creating the model results</h2>
+<section id="creating-the-model-results-for-cholesterol-only" class="level2">
+<h2 class="anchored" data-anchor-id="creating-the-model-results-for-cholesterol-only">Creating the model results for cholesterol only</h2>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co">#' Generating model results</span></span>
 <span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="co">#'</span></span>
@@ -363,10 +363,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a><span class="co">#' @returns model results, a tibble</span></span>
 <span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>create_model_results <span class="ot">&lt;-</span> <span class="cf">function</span>(data) {</span>
-<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>data <span class="sc">|&gt;</span></span>
-<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(metabolite <span class="sc">==</span> <span class="st">"Cholesterol"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">preprocess</span>() <span class="sc">|&gt;</span> <span class="co">#calling our previous function</span></span>
-<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fit_model</span>(class <span class="sc">~</span> value) <span class="co">#calling our previous function</span></span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>  data <span class="sc">|&gt;</span></span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">filter</span>(metabolite <span class="sc">==</span> <span class="st">"Cholesterol"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">preprocess</span>() <span class="sc">|&gt;</span> <span class="co"># calling our previous function</span></span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a>    <span class="fu">fit_model</span>(class <span class="sc">~</span> value) <span class="co"># calling our previous function</span></span>
 <span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a>}</span>
 <span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb17-14"><a href="#cb17-14" aria-hidden="true" tabindex="-1"></a><span class="fu">create_model_results</span>(lipidomics)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -376,6 +376,39 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   &lt;chr&gt;       &lt;chr&gt;         &lt;chr&gt;          &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt;
 1 Cholesterol class ~ value (Intercept)     1.02     0.364    0.0425  0.966 
 2 Cholesterol class ~ value value           2.65     0.450    2.17    0.0300</code></pre>
+</div>
+</div>
+</section>
+<section id="running-multiple-models" class="level2">
+<h2 class="anchored" data-anchor-id="running-multiple-models">Running multiple models</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>just_cholesterol <span class="ot">&lt;-</span> lipidomics <span class="sc">|&gt;</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(metabolite <span class="sc">==</span> <span class="st">"Cholesterol"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">preprocess</span>()</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>fit_all_models <span class="ot">&lt;-</span> <span class="cf">function</span>(data) {</span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">list</span>(</span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>    class <span class="sc">~</span> value,</span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>    class <span class="sc">~</span> value <span class="sc">+</span> gender <span class="sc">+</span> age</span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span> <span class="co"># usint purr in map is a little bit confusing, explained more in website</span></span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a>    purrr<span class="sc">::</span><span class="fu">map</span>(\(model) <span class="fu">fit_model</span>(data, <span class="at">model =</span> model)) <span class="sc">|&gt;</span> <span class="co"># \()is the shortcut for an annonymous function</span></span>
+<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a>    purrr<span class="sc">::</span><span class="fu">list_rbind</span>()</span>
+<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-14"><a href="#cb19-14" aria-hidden="true" tabindex="-1"></a>lipidomics <span class="sc">|&gt;</span></span>
+<span id="cb19-15"><a href="#cb19-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(metabolite <span class="sc">==</span> <span class="st">"Cholesterol"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb19-16"><a href="#cb19-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">preprocess</span>() <span class="sc">|&gt;</span></span>
+<span id="cb19-17"><a href="#cb19-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fit_all_models</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 7
+  metabolite  model                   term  estimate std.error statistic p.value
+  &lt;chr&gt;       &lt;chr&gt;                   &lt;chr&gt;    &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt;
+1 Cholesterol class ~ value           (Int…    1.02     0.364     0.0425  0.966 
+2 Cholesterol class ~ value           value    2.65     0.450     2.17    0.0300
+3 Cholesterol class ~ value + gender… (Int…    1.11     1.29      0.0817  0.935 
+4 Cholesterol class ~ value + gender… value    2.97     0.458     2.38    0.0175
+5 Cholesterol class ~ value + gender… gend…    0.493    0.779    -0.907   0.365 
+6 Cholesterol class ~ value + gender… age      1.01     0.0377    0.183   0.855 </code></pre>
 </div>
 </div>
 </section>

@@ -13,6 +13,7 @@ Imports:
     glue,
     here,
     knitr,
+    purrr,
     quarto,
     readr,
     readxl,

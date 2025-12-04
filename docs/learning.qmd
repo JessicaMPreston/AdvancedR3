@@ -128,7 +128,7 @@ fit_model <- function(data, model) {
 fit_model(just_cholesterol, class ~ value)
 ```
 
-## Creating the model results
+## Creating the model results for cholesterol only
 
 ```{r}
 #' Generating model results
@@ -138,11 +138,37 @@ fit_model(just_cholesterol, class ~ value)
 #' @returns model results, a tibble
 
 create_model_results <- function(data) {
-data |>
-  dplyr::filter(metabolite == "Cholesterol") |>
-  preprocess() |> #calling our previous function
-  fit_model(class ~ value) #calling our previous function
+  data |>
+    dplyr::filter(metabolite == "Cholesterol") |>
+    preprocess() |> # calling our previous function
+    fit_model(class ~ value) # calling our previous function
 }
 
 create_model_results(lipidomics)
+```
+
+## Running multiple models
+
+```{r}
+just_cholesterol <- lipidomics |>
+  filter(metabolite == "Cholesterol") |>
+  preprocess()
+
+lipidomics |>
+  filter(metabolite == "Cholesterol") |>
+  preprocess() |>
+  fit_all_models()
+
+lipidomics |>
+  group_split(metabolite)
+```
+
+## Run all metabolite models together at once
+
+```{r}
+lipidomics |>
+  group_split(metabolite) |>
+  map(preprocess) |>
+  map(fit_all_models) |>
+  list_rbind()
 ```
