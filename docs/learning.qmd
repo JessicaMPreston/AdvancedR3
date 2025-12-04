@@ -147,22 +147,6 @@ create_model_results <- function(data) {
 create_model_results(lipidomics)
 ```
 
-## Running multiple models
-
-```{r}
-just_cholesterol <- lipidomics |>
-  filter(metabolite == "Cholesterol") |>
-  preprocess()
-
-lipidomics |>
-  filter(metabolite == "Cholesterol") |>
-  preprocess() |>
-  fit_all_models()
-
-lipidomics |>
-  group_split(metabolite)
-```
-
 ## Run all metabolite models together at once
 
 ```{r}
@@ -170,5 +154,14 @@ lipidomics |>
   group_split(metabolite) |>
   map(preprocess) |>
   map(fit_all_models) |>
-  list_rbind()
+  purrr::list_rbind()
+```
+
+## Appendix
+
+```{r}
+tar_read(model_results) |>
+  knitr::kable(
+    caption = "Lipidomics Model Results"
+  )
 ```

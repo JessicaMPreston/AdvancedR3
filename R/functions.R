@@ -77,19 +77,6 @@ fit_model <- function(data, model) {
 }
 
 
-#' Generating model results
-#'
-#' @param data df, lipidomics
-#'
-#' @returns model results, a tibble
-
-create_model_results <- function(data) {
-  data |>
-    dplyr::filter(metabolite == "Cholesterol") |>
-    preprocess() |> # calling our previous function
-    fit_model(class ~ value) # calling our previous function
-}
-
 #' Fitting models to a general data frame
 #'
 #' @param data, lipidomics that has been filtered
@@ -102,5 +89,20 @@ fit_all_models <- function(data) {
     class ~ value + gender + age
   ) |> # usint purr in map is a little bit confusing, explained more in website
     purrr::map(\(model) fit_model(data, model = model)) |> # \()is the shortcut for an annonymous function
+    purrr::list_rbind()
+}
+
+
+#' Generating model results
+#'
+#' @param data df, lipidomics
+#'
+#' @returns model results, a tibble
+
+create_model_results <- function(data) {
+  data |>
+    dplyr::group_split(metabolite) |>
+    purrr::map(preprocess) |> # calling our previous function
+    purrr::map(fit_all_models) |> # calling our previous function
     purrr::list_rbind()
 }
